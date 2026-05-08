@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MEP Checklist — GUNA JASA</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#1a202c;font-size:15px}
+  .topbar{background:#185FA5;color:#fff;padding:13px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+  .topbar svg{width:22px;height:22px;flex-shrink:0}
+  .topbar .t1{font-size:15px;font-weight:600}
+  .topbar .t2{font-size:11px;opacity:0.8}
+  .topbar .ver{margin-left:auto;font-size:10px;opacity:0.7;background:rgba(255,255,255,0.15);padding:2px 7px;border-radius:8px}
+  .nav{display:flex;background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:48px;z-index:99}
+  .nav-btn{flex:1;padding:10px 4px 8px;font-size:12px;border:none;background:none;cursor:pointer;color:#718096;border-bottom:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color 0.15s}
+  .nav-btn svg{width:20px;height:20px}
+  .nav-btn.active{color:#185FA5;border-bottom-color:#185FA5;font-weight:600}
+  .page{display:none;padding:0 0 80px}
+  .page.active{display:block}
+  .section{padding:12px 14px 0}
+  .sec-label{font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:13px;margin-bottom:10px}
+  .field{margin-bottom:10px}
+  .field:last-child{margin-bottom:0}
+  .field label{font-size:12px;color:#4a5568;display:block;margin-bottom:4px;font-weight:500}
+  .field select,.field input,.field textarea{width:100%;font-size:14px;padding:9px 12px;border:1px solid #cbd5e0;border-radius:8px;background:#f7fafc;color:#1a202c;-webkit-appearance:none;appearance:none}
+  .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+  .field select:focus,.field input:focus,.field textarea:focus{outline:none;border-color:#185FA5;background:#fff}
+  .field textarea{resize:vertical;min-height:70px;line-height:1.5}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .item-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:13px;margin-bottom:10px}
+  .item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #edf2f7}
+  .item-num{font-size:13px;font-weight:700;color:#185FA5;display:flex;align-items:center;gap:6px}
+  .item-num svg{width:15px;height:15px}
+  .remove-btn{background:none;border:1px solid #fed7d7;border-radius:6px;cursor:pointer;color:#fc8181;padding:4px 8px;font-size:11px;display:flex;align-items:center;gap:3px}
+  .remove-btn svg{width:13px;height:13px}
+  .status-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .status-btn{padding:9px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#f7fafc;cursor:pointer;text-align:center;color:#718096;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:5px}
+  .status-btn svg{width:15px;height:15px}
+  .status-btn.ok{background:#f0fff4;border-color:#48bb78;color:#276749;font-weight:600}
+  .status-btn.nok{background:#fff5f5;border-color:#fc8181;color:#c53030;font-weight:600}
+  .photo-area{border:2px dashed #cbd5e0;border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:#f7fafc;transition:border-color 0.15s}
+  .photo-area:hover{border-color:#185FA5}
+  .photo-area svg{width:28px;height:28px;color:#a0aec0;display:block;margin:0 auto 6px}
+  .photo-area .pa-title{font-size:13px;color:#4a5568;font-weight:500}
+  .photo-area .pa-sub{font-size:11px;color:#a0aec0;margin-top:2px}
+  .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+  .photo-thumb{aspect-ratio:1;border-radius:8px;overflow:hidden;position:relative;background:#edf2f7}
+  .photo-thumb img{width:100%;height:100%;object-fit:cover}
+  .photo-thumb .del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;line-height:1}
+  .add-item-btn{width:100%;padding:12px;border:2px dashed #bee3f8;border-radius:12px;background:none;cursor:pointer;color:#185FA5;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;font-weight:500;transition:background 0.15s}
+  .add-item-btn:hover{background:#ebf8ff}
+  .add-item-btn svg{width:18px;height:18px}
+  .submit-btn{width:100%;padding:14px;background:#185FA5;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s}
+  .submit-btn:hover{background:#1a6bbf}
+  .submit-btn:active{background:#144e8a}
+  .submit-btn svg{width:18px;height:18px}
+  .submit-btn:disabled{background:#a0aec0;cursor:not-allowed}
+  input[type=file]{display:none}
+  .badge{display:inline-flex;align-items:center;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600}
+  .badge-blue{background:#ebf8ff;color:#2b6cb0}
+  .badge-green{background:#f0fff4;color:#276749}
+  .badge-red{background:#fff5f5;color:#c53030}
+  .badge-gray{background:#f7fafc;color:#718096;border:1px solid #e2e8f0}
+  .report-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:13px;margin-bottom:8px}
+  .rc-proj{font-size:14px;font-weight:700;color:#1a202c}
+  .rc-meta{font-size:11px;color:#a0aec0;margin-top:2px}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;text-align:center}
+  .stat .n{font-size:24px;font-weight:700}
+  .stat .l{font-size:11px;color:#718096;margin-top:3px}
+  .empty-state{text-align:center;padding:3rem 1rem;color:#a0aec0}
+  .empty-state svg{width:48px;height:48px;margin:0 auto 12px;opacity:0.4}
+  .empty-state p{font-size:13px}
+
+  /* Setup / Config page */
+  .setup-box{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:12px}
+  .setup-title{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+  .setup-title svg{width:16px;height:16px;color:#185FA5}
+  .setup-desc{font-size:12px;color:#718096;margin-bottom:12px;line-height:1.6}
+  .setup-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+  .step-num{background:#185FA5;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .step-text{font-size:12px;color:#4a5568;line-height:1.6}
+  .step-text a{color:#185FA5;word-break:break-all}
+  .step-text code{background:#edf2f7;padding:1px 5px;border-radius:4px;font-size:11px;font-family:monospace}
+  .save-btn{width:100%;padding:11px;background:#276749;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+  .save-btn svg{width:16px;height:16px}
+  .gs-status{font-size:12px;padding:8px 12px;border-radius:8px;margin-top:8px;display:none}
+  .gs-status.ok{background:#f0fff4;color:#276749;border:1px solid #9ae6b4}
+  .gs-status.err{background:#fff5f5;color:#c53030;border:1px solid #feb2b2}
+  .copy-btn{background:#edf2f7;border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;color:#4a5568;margin-left:6px}
+
+  /* Sending overlay */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center}
+  .overlay.show{display:flex}
+  .overlay-box{background:#fff;border-radius:16px;padding:28px 24px;text-align:center;width:260px}
+  .spinner{width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#185FA5;border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 14px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .overlay-box p{font-size:14px;color:#4a5568}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+  <div>
+    <div class="t1">MEP Checklist</div>
+    <div class="t2">GUNA JASA Construction</div>
+  </div>
+  <div class="ver">v1.0</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('form')" id="nav-form">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    Form
+  </button>
+  <button class="nav-btn" onclick="showPage('log')" id="nav-log">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 12h6M9 16h4"/></svg>
+    Riwayat
+  </button>
+  <button class="nav-btn" onclick="showPage('dashboard')" id="nav-dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Ringkasan
+  </button>
+  <button class="nav-btn" onclick="showPage('setup')" id="nav-setup">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+    Setup
+  </button>
+</div>
+
+<!-- ===================== FORM PAGE ===================== -->
+<div class="page active" id="page-form">
+  <div class="section">
+    <div class="sec-label">Informasi Laporan</div>
+    <div class="card">
+      <div class="field">
+        <label>Nama Proyek</label>
+        <select id="proj-select">
+          <option value="">-- Pilih Proyek --</option>
+          <option>BDG</option>
+          <option>U-63</option>
+          <option>Galeria</option>
+          <option>IBBS</option>
+          <option>Lojjika</option>
+          <option>First Macinery</option>
+          <option>Lab Kertajaya</option>
+          <option>Bintoro</option>
+          <option>Selat Golf</option>
+          <option>Cikarang</option>
+          <option>RDC</option>
+          <option>GE 8</option>
+          <option>BGI</option>
+          <option>Habibi</option>
+          <option>Graha Famili O-175</option>
+          <option>Sipoa</option>
+          <option>ASPRA 1&amp;2</option>
+        </select>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Nama Pelapor</label>
+          <input type="text" id="reporter" placeholder="Nama Anda">
+        </div>
+        <div class="field">
+          <label>Tanggal</label>
+          <input type="date" id="rep-date">
+        </div>
+      </div>
+      <div class="field">
+        <label>Zona / Lantai Umum</label>
+        <input type="text" id="zone-general" placeholder="Misal: Lantai 3, Zona B">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="sec-label" style="margin-bottom:0">Item Pekerjaan</div>
+      <span class="badge badge-blue" id="item-count">1 item</span>
+    </div>
+    <div style="height:8px"></div>
+    <div id="items-container"></div>
+    <button class="add-item-btn" onclick="addItem()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      Tambah item pekerjaan
+    </button>
+  </div>
+
+  <div class="section">
+    <button class="submit-btn" onclick="submitForm()" id="submit-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Kirim Laporan
+    </button>
+  </div>
+</div>
+
+<!-- ===================== LOG PAGE ===================== -->
+<div class="page" id="page-log">
+  <div class="section" style="padding-top:12px">
+    <div class="sec-label">Laporan Terkirim</div>
+    <div id="log-container">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+        <p>Belum ada laporan.<br>Isi form dan kirim dulu.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DASHBOARD PAGE ===================== -->
+<div class="page" id="page-dashboard">
+  <div class="section" style="padding-top:12px">
+    <div class="sec-label">Statistik</div>
+    <div class="stat-grid">
+      <div class="stat"><div class="n" id="stat-total">0</div><div class="l">Total Laporan</div></div>
+      <div class="stat"><div class="n" id="stat-items">0</div><div class="l">Item Dicek</div></div>
+      <div class="stat"><div class="n" id="stat-ok" style="color:#276749">0</div><div class="l">OK / Sesuai</div></div>
+      <div class="stat"><div class="n" id="stat-nok" style="color:#c53030">0</div><div class="l">Perlu Perhatian</div></div>
+    </div>
+    <div class="sec-label">Per Proyek</div>
+    <div id="proj-stats"><div class="empty-state" style="padding:1.5rem 0"><p>Belum ada data.</p></div></div>
+    <div class="sec-label" style="margin-top:12px">Per Kategori</div>
+    <div id="cat-stats"><div class="empty-state" style="padding:1.5rem 0"><p>Belum ada data.</p></div></div>
+  </div>
+</div>
+
+<!-- ===================== SETUP PAGE ===================== -->
+<div class="page" id="page-setup">
+  <div class="section" style="padding-top:12px">
+    <div class="sec-label">Koneksi Google Sheets</div>
+    <div class="setup-box">
+      <div class="setup-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+        Cara Setup Google Sheets
+      </div>
+      <div class="setup-desc">Data checklist akan otomatis masuk ke Google Sheets setiap kali laporan dikirim. Ikuti langkah berikut:</div>
+
+      <div class="setup-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Buka <a href="https://sheets.google.com" target="_blank">Google Sheets</a>, buat spreadsheet baru. Beri nama misalnya <strong>MEP Checklist GUNA JASA</strong>.</div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">2</div>
+        <div class="step-text">Di spreadsheet tersebut, klik menu <strong>Extensions → Apps Script</strong>.</div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Hapus semua kode yang ada, lalu paste kode berikut: <button class="copy-btn" onclick="copyScript()">Salin Kode</button>
+          <div style="margin-top:8px;background:#1a202c;color:#e2e8f0;padding:10px;border-radius:8px;font-size:10px;font-family:monospace;line-height:1.7;white-space:pre-wrap;overflow-x:auto" id="gas-code">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Sheet 1: Ringkasan Laporan
+    var sh1 = ss.getSheetByName('Laporan') || ss.insertSheet('Laporan');
+    if (sh1.getLastRow() === 0) {
+      sh1.appendRow(['ID','Tanggal','Proyek','Pelapor','Zona','Jumlah Item','OK','NOK','Waktu Kirim']);
+      sh1.getRange(1,1,1,9).setFontWeight('bold').setBackground('#185FA5').setFontColor('#ffffff');
+    }
+    var ok = data.items.filter(function(i){return i.status==='ok'}).length;
+    var nok = data.items.filter(function(i){return i.status==='nok'}).length;
+    sh1.appendRow([data.id, data.date, data.project, data.reporter, data.zone||'-', data.items.length, ok, nok, new Date().toLocaleString('id-ID')]);
+
+    // Sheet 2: Detail Item
+    var sh2 = ss.getSheetByName('Detail Item') || ss.insertSheet('Detail Item');
+    if (sh2.getLastRow() === 0) {
+      sh2.appendRow(['ID Laporan','Tanggal','Proyek','Pelapor','Kategori','Area','Deskripsi','Status','Jumlah Foto','URL Foto']);
+      sh2.getRange(1,1,1,10).setFontWeight('bold').setBackground('#185FA5').setFontColor('#ffffff');
+    }
+    data.items.forEach(function(item) {
+      sh2.appendRow([data.id, data.date, data.project, data.reporter, item.category||'-', item.area||'-', item.desc||'-', item.status, item.photoCount||0, item.photoUrls||'-']);
+    });
+
+    return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status:'error',msg:err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">4</div>
+        <div class="step-text">Klik <strong>Deploy → New deployment</strong>. Pilih type <strong>Web app</strong>. Set <em>Execute as</em>: <strong>Me</strong>, <em>Who has access</em>: <strong>Anyone</strong>. Klik <strong>Deploy</strong> dan izinkan akses.</div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">5</div>
+        <div class="step-text">Copy URL Web App yang muncul (dimulai dengan <code>https://script.google.com/macros/s/...</code>), lalu paste di kotak bawah ini.</div>
+      </div>
+
+      <div class="field" style="margin-top:12px">
+        <label>URL Google Apps Script Web App</label>
+        <input type="url" id="gas-url" placeholder="https://script.google.com/macros/s/..." style="font-size:12px">
+      </div>
+      <button class="save-btn" onclick="saveGASUrl()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Simpan & Test Koneksi
+      </button>
+      <div class="gs-status" id="gs-status"></div>
+    </div>
+
+    <div class="setup-box">
+      <div class="setup-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Pengaturan Profil
+      </div>
+      <div class="field">
+        <label>Nama Default Pelapor (opsional)</label>
+        <input type="text" id="default-reporter" placeholder="Nama Anda">
+      </div>
+      <button class="save-btn" onclick="saveProfile()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+        Simpan Profil
+      </button>
+    </div>
+
+    <div class="setup-box" style="background:#f0fff4;border-color:#9ae6b4">
+      <div class="setup-title" style="color:#276749">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        Cara Deploy ke Web (Gratis)
+      </div>
+      <div class="setup-desc" style="margin-bottom:0">
+        File <code>index.html</code> ini bisa dihosting gratis di:<br><br>
+        <strong>1. GitHub Pages</strong> — Upload ke GitHub repo, aktifkan Pages di Settings.<br>
+        <strong>2. Netlify</strong> — Drag &amp; drop folder ke netlify.com/drop.<br>
+        <strong>3. Google Drive</strong> — Upload, share as "Anyone with link", buka sebagai Google Sites.<br><br>
+        Setelah online, bagikan link ke seluruh tim lapangan. Bisa disimpan sebagai shortcut di Home Screen HP.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <div class="spinner"></div>
+    <p id="overlay-msg">Mengirim laporan...</p>
+  </div>
+</div>
+
+<script>
+const CATEGORIES = ['Mechanical','Electrical','Plumbing','Fire Protection','BAS / Kontrol','Struktur Pendukung'];
+let items = [], reports = [], itemCounter = 0;
+let gasUrl = localStorage.getItem('mep_gas_url') || '';
+let defaultReporter = localStorage.getItem('mep_reporter') || '';
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.getElementById('nav-' + p).classList.add('active');
+  if (p === 'dashboard') renderDashboard();
+  if (p === 'log') renderLog();
+  if (p === 'setup') loadSetup();
+}
+
+function loadSetup() {
+  document.getElementById('gas-url').value = gasUrl;
+  document.getElementById('default-reporter').value = defaultReporter;
+}
+
+function saveGASUrl() {
+  const url = document.getElementById('gas-url').value.trim();
+  const st = document.getElementById('gs-status');
+  if (!url || !url.startsWith('https://script.google.com')) {
+    st.textContent = 'URL tidak valid. Pastikan dimulai dengan https://script.google.com/macros/s/...';
+    st.className = 'gs-status err'; st.style.display = 'block'; return;
+  }
+  gasUrl = url;
+  localStorage.setItem('mep_gas_url', url);
+  st.textContent = 'URL tersimpan! Laporan berikutnya akan dikirim ke Google Sheets.';
+  st.className = 'gs-status ok'; st.style.display = 'block';
+}
+
+function saveProfile() {
+  const name = document.getElementById('default-reporter').value.trim();
+  defaultReporter = name;
+  localStorage.setItem('mep_reporter', name);
+  if (name) document.getElementById('reporter').value = name;
+  alert('Profil disimpan! Nama "' + name + '" akan otomatis terisi di form.');
+}
+
+function copyScript() {
+  const code = document.getElementById('gas-code').textContent;
+  navigator.clipboard.writeText(code).then(() => alert('Kode berhasil disalin! Paste di Google Apps Script.'));
+}
+
+function addItem() {
+  itemCounter++;
+  items.push({ id: 'item-' + itemCounter, photos: [], status: null });
+  renderItems();
+}
+
+function removeItem(id) {
+  items = items.filter(x => x.id !== id);
+  renderItems();
+}
+
+function renderItems() {
+  const c = document.getElementById('items-container');
+  c.innerHTML = '';
+  items.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'item-card';
+    div.innerHTML = `
+      <div class="item-header">
+        <span class="item-num">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          Item #${idx + 1}
+        </span>
+        ${items.length > 1 ? `<button class="remove-btn" onclick="removeItem('${item.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6m5 0V4h4v2"/></svg>Hapus</button>` : ''}
+      </div>
+      <div class="field">
+        <label>Kategori Pekerjaan</label>
+        <select id="${item.id}-cat">
+          <option value="">-- Pilih Kategori --</option>
+          ${CATEGORIES.map(c => `<option>${c}</option>`).join('')}
+          <option value="__custom__">Lainnya (ketik manual)</option>
+        </select>
+      </div>
+      <div class="field" id="${item.id}-cwrap" style="display:none">
+        <label>Nama Kategori Lainnya</label>
+        <input type="text" id="${item.id}-cust" placeholder="Ketik kategori...">
+      </div>
+      <div class="field">
+        <label>Area / Lokasi Pekerjaan</label>
+        <input type="text" id="${item.id}-area" placeholder="Misal: Shaft Lantai 3, Panel Room B2">
+      </div>
+      <div class="field">
+        <label>Deskripsi Pekerjaan</label>
+        <textarea id="${item.id}-desc" placeholder="Jelaskan pekerjaan yang dilakukan atau ditemukan..."></textarea>
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <div class="status-row">
+          <button class="status-btn${item.status === 'ok' ? ' ok' : ''}" id="${item.id}-ok" onclick="setStatus('${item.id}','ok')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            OK / Sesuai
+          </button>
+          <button class="status-btn${item.status === 'nok' ? ' nok' : ''}" id="${item.id}-nok" onclick="setStatus('${item.id}','nok')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Perlu Tindak
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Foto Pekerjaan (bisa lebih dari 1)</label>
+        <div class="photo-area" onclick="document.getElementById('pi-${item.id}').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <div class="pa-title">Ketuk untuk ambil / pilih foto</div>
+          <div class="pa-sub">Bisa pilih banyak foto sekaligus</div>
+        </div>
+        <input type="file" id="pi-${item.id}" accept="image/*" multiple onchange="handlePhotos('${item.id}',this)">
+        <div class="photo-grid" id="${item.id}-photos"></div>
+      </div>
+    `;
+    c.appendChild(div);
+    document.getElementById(item.id + '-cat').addEventListener('change', function () {
+      document.getElementById(item.id + '-cwrap').style.display = this.value === '__custom__' ? 'block' : 'none';
+    });
+    renderPhotos(item.id);
+  });
+  document.getElementById('item-count').textContent = items.length + ' item';
+}
+
+function setStatus(id, val) {
+  const item = items.find(x => x.id === id);
+  if (!item) return;
+  item.status = item.status === val ? null : val;
+  document.getElementById(id + '-ok').className = 'status-btn' + (item.status === 'ok' ? ' ok' : '');
+  document.getElementById(id + '-nok').className = 'status-btn' + (item.status === 'nok' ? ' nok' : '');
+}
+
+function handlePhotos(id, input) {
+  const item = items.find(x => x.id === id);
+  if (!item) return;
+  Array.from(input.files).forEach(file => {
+    const r = new FileReader();
+    r.onload = e => { item.photos.push(e.target.result); renderPhotos(id); };
+    r.readAsDataURL(file);
+  });
+}
+
+function renderPhotos(id) {
+  const item = items.find(x => x.id === id);
+  const grid = document.getElementById(id + '-photos');
+  if (!grid || !item) return;
+  grid.innerHTML = item.photos.map((src, i) => `
+    <div class="photo-thumb">
+      <img src="${src}" alt="Foto ${i + 1}">
+      <button class="del" onclick="removePhoto('${id}',${i})">×</button>
+    </div>`).join('');
+}
+
+function removePhoto(id, idx) {
+  const item = items.find(x => x.id === id);
+  if (item) { item.photos.splice(idx, 1); renderPhotos(id); }
+}
+
+function collectItems() {
+  return items.map(item => {
+    const catEl = document.getElementById(item.id + '-cat');
+    let cat = catEl ? catEl.value : '';
+    if (cat === '__custom__') { const el = document.getElementById(item.id + '-cust'); cat = el ? el.value : 'Lainnya'; }
+    return {
+      category: cat,
+      area: (document.getElementById(item.id + '-area') || {}).value || '',
+      desc: (document.getElementById(item.id + '-desc') || {}).value || '',
+      status: item.status || 'pending',
+      photoCount: item.photos.length,
+      photoUrls: item.photos.length > 0 ? '[' + item.photos.length + ' foto tersimpan lokal]' : '-',
+      photos: item.photos
+    };
+  });
+}
+
+async function submitForm() {
+  const proj = document.getElementById('proj-select').value;
+  const reporter = document.getElementById('reporter').value.trim();
+  if (!proj) { alert('Pilih proyek terlebih dahulu.'); return; }
+  if (!reporter) { alert('Isi nama pelapor.'); return; }
+  if (items.length === 0) { alert('Tambahkan minimal 1 item pekerjaan.'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  showOverlay('Menyimpan laporan...');
+
+  const report = {
+    id: 'LAP-' + Date.now(),
+    project: proj,
+    reporter,
+    date: document.getElementById('rep-date').value || new Date().toISOString().slice(0, 10),
+    zone: document.getElementById('zone-general').value,
+    items: collectItems(),
+    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+    createdAt: new Date().toISOString()
+  };
+
+  reports.unshift(report);
+
+  if (gasUrl) {
+    try {
+      updateOverlay('Mengirim ke Google Sheets...');
+      const payload = { ...report };
+      payload.items = payload.items.map(i => ({ ...i, photos: undefined }));
+      await fetch(gasUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      hideOverlay();
+      alert('Laporan berhasil dikirim dan masuk ke Google Sheets!');
+    } catch (err) {
+      hideOverlay();
+      alert('Laporan tersimpan lokal. Gagal kirim ke Sheets: ' + err.message);
+    }
+  } else {
+    hideOverlay();
+    alert('Laporan tersimpan! (Hubungkan Google Sheets di tab Setup untuk sinkronisasi otomatis)');
+  }
+
+  btn.disabled = false;
+  resetForm();
+  showPage('log');
+}
+
+function resetForm() {
+  document.getElementById('proj-select').value = '';
+  document.getElementById('zone-general').value = '';
+  document.getElementById('rep-date').value = new Date().toISOString().slice(0, 10);
+  if (defaultReporter) document.getElementById('reporter').value = defaultReporter;
+  else document.getElementById('reporter').value = '';
+  items = []; itemCounter = 0; addItem();
+}
+
+function renderLog() {
+  const c = document.getElementById('log-container');
+  if (!reports.length) {
+    c.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg><p>Belum ada laporan.</p></div>`;
+    return;
+  }
+  c.innerHTML = reports.map(r => {
+    const ok = r.items.filter(x => x.status === 'ok').length;
+    const nok = r.items.filter(x => x.status === 'nok').length;
+    const pending = r.items.filter(x => x.status === 'pending').length;
+    const totalPhotos = r.items.reduce((a, i) => a + (i.photoCount || 0), 0);
+    return `<div class="report-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="flex:1;min-width:0">
+          <div class="rc-proj">${r.project}</div>
+          <div class="rc-meta">${r.date} · ${r.time} · ${r.reporter}</div>
+          ${r.zone ? `<div class="rc-meta" style="margin-top:1px">📍 ${r.zone}</div>` : ''}
+        </div>
+        <span class="badge badge-blue" style="flex-shrink:0;margin-left:8px">${r.items.length} item</span>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">
+        ${ok ? `<span class="badge badge-green">✓ ${ok} OK</span>` : ''}
+        ${nok ? `<span class="badge badge-red">! ${nok} NOK</span>` : ''}
+        ${pending ? `<span class="badge badge-gray">${pending} belum</span>` : ''}
+        ${totalPhotos ? `<span class="badge badge-gray">📷 ${totalPhotos} foto</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDashboard() {
+  const allItems = reports.flatMap(r => r.items);
+  document.getElementById('stat-total').textContent = reports.length;
+  document.getElementById('stat-items').textContent = allItems.length;
+  document.getElementById('stat-ok').textContent = allItems.filter(x => x.status === 'ok').length;
+  document.getElementById('stat-nok').textContent = allItems.filter(x => x.status === 'nok').length;
+
+  const projMap = {};
+  reports.forEach(r => {
+    if (!projMap[r.project]) projMap[r.project] = { count: 0, ok: 0, nok: 0 };
+    projMap[r.project].count++;
+    r.items.forEach(i => {
+      if (i.status === 'ok') projMap[r.project].ok++;
+      if (i.status === 'nok') projMap[r.project].nok++;
+    });
+  });
+  const ps = document.getElementById('proj-stats');
+  ps.innerHTML = Object.keys(projMap).length ? Object.entries(projMap).map(([p, d]) => `
+    <div class="report-card" style="margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between">
+        <span style="font-size:13px;font-weight:700">${p}</span>
+        <span class="badge badge-blue">${d.count} laporan</span>
+      </div>
+      <div style="display:flex;gap:5px;margin-top:6px">
+        <span class="badge badge-green">${d.ok} OK</span>
+        <span class="badge badge-red">${d.nok} NOK</span>
+      </div>
+    </div>`).join('') : `<div class="empty-state" style="padding:1rem 0"><p>Belum ada data.</p></div>`;
+
+  const catMap = {};
+  allItems.forEach(i => {
+    const cat = i.category || 'Tidak dikategorikan';
+    if (!catMap[cat]) catMap[cat] = { ok: 0, nok: 0, total: 0 };
+    catMap[cat].total++;
+    if (i.status === 'ok') catMap[cat].ok++;
+    if (i.status === 'nok') catMap[cat].nok++;
+  });
+  const cs = document.getElementById('cat-stats');
+  cs.innerHTML = Object.keys(catMap).length ? Object.entries(catMap).map(([cat, d]) => `
+    <div class="report-card" style="margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between">
+        <span style="font-size:13px;font-weight:700">${cat}</span>
+        <span class="badge badge-blue">${d.total} item</span>
+      </div>
+      <div style="display:flex;gap:5px;margin-top:6px">
+        <span class="badge badge-green">${d.ok} OK</span>
+        <span class="badge badge-red">${d.nok} NOK</span>
+      </div>
+    </div>`).join('') : `<div class="empty-state" style="padding:1rem 0"><p>Belum ada data.</p></div>`;
+}
+
+function showOverlay(msg) { document.getElementById('overlay-msg').textContent = msg; document.getElementById('overlay').classList.add('show'); }
+function updateOverlay(msg) { document.getElementById('overlay-msg').textContent = msg; }
+function hideOverlay() { document.getElementById('overlay').classList.remove('show'); }
+
+// Init
+document.getElementById('rep-date').value = new Date().toISOString().slice(0, 10);
+if (defaultReporter) document.getElementById('reporter').value = defaultReporter;
+addItem();
+</script>
+</body>
+</html>
